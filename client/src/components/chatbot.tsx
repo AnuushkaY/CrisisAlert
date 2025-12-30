@@ -62,12 +62,11 @@ export default function Chatbot() {
       {isOpen && (
         <div 
           role="dialog"
-          className="fixed bottom-24 right-6 w-96 h-[500px] neo-card z-[9999] flex flex-col overflow-hidden"
+          className="fixed bottom-24 right-6 w-96 h-[500px] neo-card z-[9999] flex flex-col overflow-hidden chatbot-dialog !transform-none"
           style={{ 
             position: 'fixed',
             bottom: '100px',
             right: '24px',
-            transform: 'none',
             top: 'auto',
             left: 'auto'
           }}
