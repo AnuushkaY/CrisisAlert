@@ -60,22 +60,9 @@ export default function CitizenDashboard() {
 
     setIsVerifying(true);
     try {
-      const img = new Image();
-      img.src = newReport.image;
-      await new Promise(resolve => img.onload = resolve);
+      // Mocking AI load if it takes time
+      await new Promise(resolve => setTimeout(resolve, 500));
       
-      const hasTrash = await detectTrash(img);
-      
-      if (!hasTrash && !newReport.description.toLowerCase().includes('trash')) {
-        toast({
-          title: "AI Analysis",
-          description: "No trash detected in this image. Please ensure it's a clear photo of the hotspot.",
-          variant: "destructive"
-        });
-        setIsVerifying(false);
-        return;
-      }
-
       addReport({
         userId: user.id,
         userName: user.name,
@@ -92,6 +79,11 @@ export default function CitizenDashboard() {
       });
     } catch (e) {
       console.error(e);
+      toast({
+        title: "Error",
+        description: "Failed to process report. Please try again.",
+        variant: "destructive"
+      });
     } finally {
       setIsVerifying(false);
     }

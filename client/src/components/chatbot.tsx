@@ -60,7 +60,7 @@ export default function Chatbot() {
       </Button>
 
       {isOpen && (
-        <div className="fixed bottom-24 right-6 w-96 h-[500px] neo-card z-50 flex flex-col overflow-hidden animate-in slide-in-from-bottom-10 duration-300">
+        <div className="fixed bottom-24 right-6 w-96 h-[500px] neo-card z-[9999] flex flex-col overflow-hidden">
           <div className="bg-primary p-6 border-b-4 border-foreground flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="bg-white p-2 border-2 border-foreground rounded-lg shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
