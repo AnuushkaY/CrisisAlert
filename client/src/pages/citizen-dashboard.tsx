@@ -102,7 +102,7 @@ export default function CitizenDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background pb-24">
       <header className="sticky top-0 z-40 border-b-8 border-foreground bg-white px-8">
         <div className="container mx-auto flex h-24 items-center justify-between">
           <div className="font-display font-black text-4xl text-foreground tracking-tighter flex items-center gap-3 italic">

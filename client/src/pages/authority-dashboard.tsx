@@ -84,7 +84,7 @@ export default function AuthorityDashboard() {
   const filteredReports = reports.filter(r => statusFilter.includes(r.status));
 
   return (
-    <div className="flex h-screen flex-col bg-background overflow-hidden selection:bg-primary/20">
+    <div className="flex h-screen flex-col bg-background overflow-hidden selection:bg-primary/20 pb-safe">
       <header className="flex h-20 shrink-0 items-center justify-between border-b px-8 bg-card/50 backdrop-blur-xl z-30 shadow-sm">
         <div className="flex items-center gap-4">
           <div className="font-display font-extrabold text-3xl text-primary tracking-tighter flex items-center gap-3">

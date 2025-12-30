@@ -104,12 +104,14 @@
   box-shadow: 8px 8px 0px 0px rgba(0,0,0,1) !important;
   transition: none !important;
   animation: none !important;
+  overflow: hidden !important; /* Contain the scrollable div */
 }
 
 [role="dialog"] > div {
   overflow-y: auto !important;
   max-height: 100% !important;
   flex: 1 !important;
+  padding-bottom: env(safe-area-inset-bottom, 20px) !important;
 }
 
 [role="dialog"], 
