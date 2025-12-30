@@ -93,30 +93,43 @@
   left: 50% !important;
   transform: translate(-50%, -50%) !important;
   margin: 0 !important;
-  max-height: 90vh !important;
+  max-height: 85vh !important;
   width: 90vw !important;
   max-width: 500px !important;
   z-index: 9999 !important;
-  overflow-y: auto !important;
+  display: flex !important;
+  flex-direction: column !important;
   background: white !important;
   border: 4px solid black !important;
   box-shadow: 8px 8px 0px 0px rgba(0,0,0,1) !important;
-  /* Disable EVERYTHING that could cause movement */
   transition: none !important;
   animation: none !important;
-  pointer-events: auto !important;
 }
 
+[role="dialog"] > div {
+  overflow-y: auto !important;
+  max-height: 100% !important;
+  flex: 1 !important;
+}
+
+[role="dialog"], 
+[role="dialog"] *,
 [role="dialog"]:hover, 
 [role="dialog"]:focus,
 [role="dialog"]:focus-within,
 [role="dialog"] *:hover,
 [role="dialog"] *:focus {
-  transform: translate(-50%, -50%) !important; /* Force position lock */
+  transform: none !important;
+  translate: none !important;
+  scale: none !important;
   transition: none !important;
   animation: none !important;
-  box-shadow: 8px 8px 0px 0px rgba(0,0,0,1) !important;
-  outline: none !important; /* Prevent layout shift from outlines */
+  outline: none !important;
+}
+
+/* Maintain the centering transform for the dialog itself */
+[role="dialog"] {
+  transform: translate(-50%, -50%) !important;
 }
 
 /* Specific fix for the report stickers which were using group-hover */
