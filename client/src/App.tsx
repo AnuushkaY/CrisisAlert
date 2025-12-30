@@ -1,16 +1,19 @@
-import { Switch, Route } from "wouter";
+import { Switch, Route, Redirect } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/not-found";
+import AuthPage from "@/pages/auth";
+import CitizenDashboard from "@/pages/citizen-dashboard";
+import AuthorityDashboard from "@/pages/authority-dashboard";
 
 function Router() {
   return (
     <Switch>
-      {/* Add pages below */}
-      {/* <Route path="/" component={Home}/> */}
-      {/* Fallback to 404 */}
+      <Route path="/" component={AuthPage} />
+      <Route path="/citizen" component={CitizenDashboard} />
+      <Route path="/authority" component={AuthorityDashboard} />
       <Route component={NotFound} />
     </Switch>
   );
@@ -20,8 +23,8 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
-        <Toaster />
         <Router />
+        <Toaster />
       </TooltipProvider>
     </QueryClientProvider>
   );
