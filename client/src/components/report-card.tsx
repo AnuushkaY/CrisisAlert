@@ -27,16 +27,16 @@ export default function ReportCard({ report, showActions, onStatusChange, onDele
   return (
     <div className="group relative">
       {/* Neo-Brutalist Sticker Effect */}
-      <div className="absolute inset-0 bg-foreground rounded-[2.5rem] translate-x-3 translate-y-3 group-hover:translate-x-1.5 group-hover:translate-y-1.5 transition-transform duration-300" />
+      <div className="absolute inset-0 bg-foreground rounded-[2.5rem] translate-x-3 translate-y-3" />
       
-      <div className="relative bg-white border-4 border-foreground rounded-[2.5rem] overflow-hidden flex flex-col h-full transition-all duration-300 group-hover:-translate-x-1 group-hover:-translate-y-1">
+      <div className="relative bg-white border-4 border-foreground rounded-[2.5rem] overflow-hidden flex flex-col h-full">
         
         {/* Visual Hero - The Image is everything */}
-        <div className="relative h-64 w-full overflow-hidden bg-muted group-hover:bg-muted/80">
+        <div className="relative h-64 w-full overflow-hidden bg-muted">
           <img 
             src={report.imageUrl} 
             alt={report.description}
-            className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+            className="h-full w-full object-cover"
           />
           
           {/* Status Badge Over Image */}

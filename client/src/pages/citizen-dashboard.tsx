@@ -148,7 +148,7 @@ export default function CitizenDashboard() {
             <div className="flex gap-6">
               <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                 <DialogTrigger asChild>
-                  <Button className="neo-button h-24 px-12 text-3xl italic scale-110 hover:scale-115">
+                  <Button className="neo-button h-24 px-12 text-3xl italic">
                     <Plus className="mr-4 h-10 w-10" /> Spot Something?
                   </Button>
                 </DialogTrigger>

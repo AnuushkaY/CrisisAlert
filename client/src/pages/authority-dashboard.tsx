@@ -252,7 +252,7 @@ export default function AuthorityDashboard() {
 
       {/* Resolution Dialog */}
       <Dialog open={!!resolvingReportId} onOpenChange={() => setResolvingReportId(null)}>
-        <DialogContent className="sm:max-w-[425px] neo-card p-10 z-[150] fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]">
+        <DialogContent className="sm:max-w-[425px] neo-card p-10 z-[150] fixed top-[50%] left-[50%] -translate-x-1/2 -translate-y-1/2">
           <DialogHeader>
             <DialogTitle className="text-3xl font-black uppercase italic tracking-tighter">Verify Cleanup</DialogTitle>
           </DialogHeader>
