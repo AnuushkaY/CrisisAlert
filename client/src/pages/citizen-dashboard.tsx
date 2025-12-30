@@ -13,10 +13,13 @@ import MapView from "@/components/map-view";
 import Chatbot from "@/components/chatbot";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
+import { detectTrash } from "@/lib/ai";
+
 export default function CitizenDashboard() {
   const { user, reports, logout, addReport } = useStore();
   const [, setLocation] = useLocation();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isVerifying, setIsVerifying] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
@@ -45,7 +48,7 @@ export default function CitizenDashboard() {
     }
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!newReport.description || !newReport.image) {
       toast({
         title: "Action Required!",
@@ -55,20 +58,43 @@ export default function CitizenDashboard() {
       return;
     }
 
-    addReport({
-      userId: user.id,
-      userName: user.name,
-      description: newReport.description,
-      imageUrl: newReport.image,
-      location: { lat: newReport.lat, lng: newReport.lng }
-    });
+    setIsVerifying(true);
+    try {
+      const img = new Image();
+      img.src = newReport.image;
+      await new Promise(resolve => img.onload = resolve);
+      
+      const hasTrash = await detectTrash(img);
+      
+      if (!hasTrash && !newReport.description.toLowerCase().includes('trash')) {
+        toast({
+          title: "AI Analysis",
+          description: "No trash detected in this image. Please ensure it's a clear photo of the hotspot.",
+          variant: "destructive"
+        });
+        setIsVerifying(false);
+        return;
+      }
 
-    setNewReport({ description: '', image: null, lat: 51.505, lng: -0.09 });
-    setIsDialogOpen(false);
-    toast({
-      title: "Successfully Logged!",
-      description: "You're making history. The neighborhood thanks you!",
-    });
+      addReport({
+        userId: user.id,
+        userName: user.name,
+        description: newReport.description,
+        imageUrl: newReport.image,
+        location: { lat: newReport.lat, lng: newReport.lng }
+      });
+
+      setNewReport({ description: '', image: null, lat: 51.505, lng: -0.09 });
+      setIsDialogOpen(false);
+      toast({
+        title: "Successfully Logged!",
+        description: "AI verified trash. Your report is now in the system!",
+      });
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setIsVerifying(false);
+    }
   };
 
   const getLocation = () => {

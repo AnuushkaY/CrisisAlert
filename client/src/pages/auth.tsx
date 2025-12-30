@@ -10,13 +10,18 @@ import { Sparkles, ShieldCheck, ArrowRight, Globe } from "lucide-react";
 
 export default function AuthPage() {
   const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const login = useStore((state) => state.login);
   const [, setLocation] = useLocation();
 
   const handleLogin = (role: Role) => {
-    if (!email) return; 
-    login(email, role);
-    setLocation(role === 'authority' ? '/authority' : '/citizen');
+    if (!email || !password) return; 
+    try {
+      login(email, role, password);
+      setLocation(role === 'authority' ? '/authority' : '/citizen');
+    } catch (e: any) {
+      alert(e.message);
+    }
   };
 
   return (
@@ -57,6 +62,13 @@ export default function AuthPage() {
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                     />
+                    <Input 
+                      type="password"
+                      placeholder="Password" 
+                      className="h-14 rounded-2xl border-2 border-foreground shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] focus:shadow-none focus:translate-x-[1px] focus:translate-y-[1px] transition-all bg-white font-bold"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                    />
                   </div>
                   <Button className="w-full h-16 neo-button text-xl uppercase tracking-tighter group" onClick={() => handleLogin('citizen')}>
                     Start Reporting
@@ -72,6 +84,13 @@ export default function AuthPage() {
                       className="h-14 rounded-2xl border-2 border-foreground shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] focus:shadow-none focus:translate-x-[1px] focus:translate-y-[1px] transition-all bg-white font-bold"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
+                    />
+                    <Input 
+                      type="password"
+                      placeholder="Password" 
+                      className="h-14 rounded-2xl border-2 border-foreground shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] focus:shadow-none focus:translate-x-[1px] focus:translate-y-[1px] transition-all bg-white font-bold"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
                     />
                   </div>
                   <Button className="w-full h-16 neo-button bg-blue-400 text-foreground border-foreground text-xl uppercase tracking-tighter group" onClick={() => handleLogin('authority')}>

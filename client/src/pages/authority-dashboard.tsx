@@ -1,9 +1,9 @@
 import { useStore, Status } from "@/lib/store";
 import { Button } from "@/components/ui/button";
-import { LogOut, Filter, Map as MapIcon, List, ShieldCheck, Globe } from "lucide-react";
+import { LogOut, Filter, Map as MapIcon, List, ShieldCheck, Globe, Camera } from "lucide-react";
 import ReportCard from "@/components/report-card";
 import { useLocation } from "wouter";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import MapView from "@/components/map-view";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -15,16 +15,78 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
+import { verifyCleanliness } from "@/lib/ai";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { useToast } from "@/hooks/use-toast";
+
 export default function AuthorityDashboard() {
   const { user, reports, logout, updateReportStatus, deleteReport } = useStore();
   const [, setLocation] = useLocation();
   const [viewMode, setViewMode] = useState<'map' | 'list'>('map');
   const [statusFilter, setStatusFilter] = useState<Status[]>(['open', 'in-progress', 'resolved']);
+  
+  const [resolvingReportId, setResolvingReportId] = useState<string | null>(null);
+  const [resolvedImage, setResolvedImage] = useState<string | null>(null);
+  const [isVerifying, setIsVerifying] = useState(false);
+  const { toast } = useToast();
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   if (!user || user.role !== 'authority') {
     setLocation("/");
     return null;
   }
+
+  const handleStatusChange = (id: string, status: Status) => {
+    if (status === 'resolved') {
+      setResolvingReportId(id);
+      return;
+    }
+    updateReportStatus(id, status);
+  };
+
+  const handleResolvedImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setResolvedImage(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleFinalizeResolution = async () => {
+    if (!resolvedImage || !resolvingReportId) return;
+    
+    setIsVerifying(true);
+    try {
+      const img = new Image();
+      img.src = resolvedImage;
+      await new Promise(resolve => img.onload = resolve);
+      
+      const isClean = await verifyCleanliness(img);
+      
+      if (!isClean) {
+        toast({
+          title: "AI Analysis",
+          description: "Trash still detected. Please ensure the area is fully cleaned before resolving.",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      updateReportStatus(resolvingReportId, 'resolved', resolvedImage);
+      setResolvingReportId(null);
+      setResolvedImage(null);
+      toast({
+        title: "Report Resolved",
+        description: "AI verified the area is clean. Thank you for your work!",
+      });
+    } finally {
+      setIsVerifying(false);
+    }
+  };
 
   const filteredReports = reports.filter(r => statusFilter.includes(r.status));
 
@@ -128,7 +190,7 @@ export default function AuthorityDashboard() {
                     <ReportCard 
                       report={report} 
                       showActions 
-                      onStatusChange={updateReportStatus}
+                      onStatusChange={handleStatusChange}
                       onDelete={deleteReport}
                     />
                   </div>
@@ -174,7 +236,7 @@ export default function AuthorityDashboard() {
                         <ReportCard 
                           report={report} 
                           showActions 
-                          onStatusChange={updateReportStatus}
+                          onStatusChange={handleStatusChange}
                           onDelete={deleteReport}
                         />
                       </div>
@@ -187,6 +249,44 @@ export default function AuthorityDashboard() {
         </div>
       </div>
       <Chatbot />
+
+      {/* Resolution Dialog */}
+      <Dialog open={!!resolvingReportId} onOpenChange={() => setResolvingReportId(null)}>
+        <DialogContent className="sm:max-w-[425px] neo-card p-10 z-[100]">
+          <DialogHeader>
+            <DialogTitle className="text-3xl font-black uppercase italic tracking-tighter">Verify Cleanup</DialogTitle>
+          </DialogHeader>
+          <div className="grid gap-6 py-4">
+            <div className="grid gap-3">
+              <Label className="font-black text-sm uppercase tracking-widest">Post-Cleanup Evidence</Label>
+              <div 
+                onClick={() => fileInputRef.current?.click()}
+                className="flex h-60 cursor-pointer flex-col items-center justify-center rounded-[2rem] border-4 border-foreground bg-muted hover:bg-white transition-all overflow-hidden relative"
+              >
+                {resolvedImage ? (
+                  <img src={resolvedImage} className="h-full w-full object-cover" alt="Resolved Preview" />
+                ) : (
+                  <div className="flex flex-col items-center text-foreground text-center p-8">
+                    <Camera className="mb-4 h-16 w-16" />
+                    <span className="text-lg font-black uppercase italic tracking-wider">Tap to Upload Clean Photo</span>
+                  </div>
+                )}
+                <input type="file" ref={fileInputRef} className="hidden" accept="image/*" onChange={handleResolvedImageUpload} />
+              </div>
+            </div>
+            <p className="text-sm font-bold italic opacity-60">EnvironmentTech AI will analyze this image to confirm the area is clean.</p>
+          </div>
+          <DialogFooter>
+            <Button 
+              disabled={isVerifying || !resolvedImage} 
+              onClick={handleFinalizeResolution} 
+              className="w-full h-16 neo-button text-xl"
+            >
+              {isVerifying ? "ANALYZING..." : "VERIFY & RESOLVE"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

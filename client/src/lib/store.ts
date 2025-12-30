@@ -25,44 +25,15 @@ export interface Report {
 interface AppState {
   user: User | null;
   reports: Report[];
-  login: (email: string, role: Role) => void;
+  login: (email: string, role: Role, password: string) => void;
   logout: () => void;
   addReport: (report: Omit<Report, 'id' | 'createdAt' | 'status'>) => void;
-  updateReportStatus: (id: string, status: Status) => void;
+  updateReportStatus: (id: string, status: Status, resolvedImageUrl?: string) => void;
   deleteReport: (id: string) => void;
 }
 
 const MOCK_REPORTS: Report[] = [
-  {
-    id: '1',
-    userId: 'user-1',
-    userName: 'John Doe',
-    description: 'Overflowing dumpster behind the market.',
-    imageUrl: 'https://images.unsplash.com/photo-1530587191325-3db32d826c18?w=800&q=80',
-    location: { lat: 51.505, lng: -0.09 },
-    status: 'open',
-    createdAt: new Date(Date.now() - 86400000).toISOString(),
-  },
-  {
-    id: '2',
-    userId: 'user-2',
-    userName: 'Jane Smith',
-    description: 'Construction debris left on sidewalk.',
-    imageUrl: 'https://images.unsplash.com/photo-1605600659908-0ef719419d41?w=800&q=80',
-    location: { lat: 51.51, lng: -0.1 },
-    status: 'in-progress',
-    createdAt: new Date(Date.now() - 172800000).toISOString(),
-  },
-  {
-    id: '3',
-    userId: 'user-1',
-    userName: 'John Doe',
-    description: 'Plastic waste accumulation in the park corner.',
-    imageUrl: 'https://images.unsplash.com/photo-1611288870280-4a39556b3c22?w=800&q=80',
-    location: { lat: 51.515, lng: -0.09 },
-    status: 'resolved',
-    createdAt: new Date(Date.now() - 259200000).toISOString(),
-  },
+  // ... (keep existing)
 ];
 
 export const useStore = create<AppState>()(
@@ -70,7 +41,9 @@ export const useStore = create<AppState>()(
     (set) => ({
       user: null,
       reports: MOCK_REPORTS,
-      login: (email, role) => {
+      login: (email, role, password) => {
+        // Mock validation - any password > 3 chars
+        if (password.length < 4) throw new Error("Password too short");
         set({
           user: {
             id: Math.random().toString(36).substr(2, 9),
@@ -93,10 +66,10 @@ export const useStore = create<AppState>()(
             ...state.reports,
           ],
         })),
-      updateReportStatus: (id, status) =>
+      updateReportStatus: (id, status, resolvedImageUrl) =>
         set((state) => ({
           reports: state.reports.map((r) =>
-            r.id === id ? { ...r, status } : r
+            r.id === id ? { ...r, status, imageUrl: resolvedImageUrl || r.imageUrl } : r
           ),
         })),
       deleteReport: (id) =>
