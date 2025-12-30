@@ -1,80 +1,113 @@
 import { Badge } from "@/components/ui/badge";
-import { Report } from "@/lib/store";
+import { Report, Status } from "@/lib/store";
 import { format } from "date-fns";
-import { MapPin, Clock } from "lucide-react";
+import { MapPin, Clock, Calendar, User, Trash2, CheckCircle2, PlayCircle, Activity } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface ReportCardProps {
   report: Report;
   showActions?: boolean;
-  onStatusChange?: (id: string, status: Report['status']) => void;
+  onStatusChange?: (id: string, status: Status) => void;
   onDelete?: (id: string) => void;
 }
 
 export default function ReportCard({ report, showActions, onStatusChange, onDelete }: ReportCardProps) {
-  const statusConfig = {
-    'open': { bg: 'bg-pink-200', text: 'text-pink-800', label: 'Open' },
-    'in-progress': { bg: 'bg-yellow-100', text: 'text-yellow-800', label: 'In Progress' },
-    'resolved': { bg: 'bg-green-100', text: 'text-green-800', label: 'Live & Clean' },
+  const statusColors = {
+    open: "bg-destructive text-white",
+    "in-progress": "bg-secondary text-foreground",
+    resolved: "bg-primary text-white",
   };
 
-  const config = statusConfig[report.status];
+  const statusIcons = {
+    open: <Clock className="h-4 w-4" />,
+    "in-progress": <Activity className="h-4 w-4 animate-pulse" />,
+    resolved: <CheckCircle2 className="h-4 w-4" />,
+  };
 
   return (
-    <div className="neo-card p-0 overflow-hidden group">
-      <div className="aspect-video w-full overflow-hidden border-b-2 border-foreground relative">
-        <img 
-          src={report.imageUrl} 
-          alt="Report" 
-          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
-        />
-        <div className={`absolute top-3 right-3 neo-badge ${config.bg} ${config.text}`}>
-          {config.label}
-        </div>
-      </div>
+    <div className="group relative">
+      {/* Neo-Brutalist Sticker Effect */}
+      <div className="absolute inset-0 bg-foreground rounded-[2.5rem] translate-x-3 translate-y-3 group-hover:translate-x-1.5 group-hover:translate-y-1.5 transition-transform duration-300" />
       
-      <div className="p-5 space-y-4">
-        <div className="flex items-center justify-between text-[10px] font-black uppercase tracking-widest opacity-60">
-          <div className="flex items-center gap-1">
-            <Clock className="h-3 w-3" />
-            {format(new Date(report.createdAt), 'MMM d, yyyy')}
-          </div>
-          <span>ID: {report.id.toUpperCase()}</span>
-        </div>
-
-        <p className="font-black text-lg leading-tight line-clamp-2 uppercase italic tracking-tighter">
-          "{report.description}"
-        </p>
+      <div className="relative bg-white border-4 border-foreground rounded-[2.5rem] overflow-hidden flex flex-col h-full transition-all duration-300 group-hover:-translate-x-1 group-hover:-translate-y-1">
         
-        <div className="flex items-center justify-between pt-2">
-          <div className="flex items-center gap-2 bg-slate-100 neo-badge text-[10px]">
-            <MapPin className="h-3 w-3" />
-            {report.location.lat.toFixed(3)}, {report.location.lng.toFixed(3)}
+        {/* Visual Hero - The Image is everything */}
+        <div className="relative h-64 w-full overflow-hidden bg-muted group-hover:bg-muted/80">
+          <img 
+            src={report.imageUrl} 
+            alt={report.description}
+            className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+          />
+          
+          {/* Status Badge Over Image */}
+          <div className="absolute top-6 left-6">
+             <div className={`neo-badge ${statusColors[report.status]} flex items-center gap-2 px-5 py-2.5 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]`}>
+                {statusIcons[report.status]}
+                <span className="text-xs font-black uppercase tracking-widest">{report.status}</span>
+             </div>
           </div>
-          <span className="text-xs font-bold italic">by {report.userName}</span>
+
+          {/* Location Overlay */}
+          <div className="absolute bottom-6 left-6 right-6">
+             <div className="bg-white/90 backdrop-blur-md border-4 border-foreground rounded-2xl p-3 flex items-center gap-3 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                <div className="bg-primary p-2 border-2 border-foreground rounded-lg">
+                  <MapPin className="h-4 w-4 text-white" />
+                </div>
+                <div>
+                  <div className="text-[10px] font-black uppercase tracking-tighter opacity-60 leading-none">Sector Coordinates</div>
+                  <div className="text-xs font-black italic">{report.location.lat.toFixed(3)}, {report.location.lng.toFixed(3)}</div>
+                </div>
+             </div>
+          </div>
         </div>
 
-        {showActions && (
-          <div className="pt-4 flex items-center gap-2 border-t-2 border-foreground/5 mt-4">
-            <select 
-              className="flex-1 h-10 rounded-xl border-2 border-foreground bg-white px-3 text-xs font-black uppercase tracking-widest shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
-              value={report.status}
-              onChange={(e) => onStatusChange?.(report.id, e.target.value as Report['status'])}
-            >
-              <option value="open">Open</option>
-              <option value="in-progress">Pending</option>
-              <option value="resolved">Resolved</option>
-            </select>
-            <button 
-              onClick={() => onDelete?.(report.id)}
-              className="h-10 w-10 flex items-center justify-center rounded-xl bg-pink-400 border-2 border-foreground shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:shadow-none active:translate-x-[1px] active:translate-y-[1px] transition-all"
-            >
-              <Trash2 className="h-4 w-4" />
-            </button>
+        {/* Info Block */}
+        <div className="p-8 flex-1 flex flex-col space-y-6">
+          <div className="space-y-3">
+             <div className="flex items-center gap-4">
+                <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest bg-muted px-3 py-1.5 rounded-full border-2 border-foreground/10">
+                   <Calendar className="h-3 w-3 text-accent" />
+                   {format(new Date(report.createdAt), 'MMM dd, yyyy')}
+                </div>
+                <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest bg-muted px-3 py-1.5 rounded-full border-2 border-foreground/10">
+                   <User className="h-3 w-3 text-secondary" />
+                   {report.userName}
+                </div>
+             </div>
+             <h3 className="font-display font-black text-2xl uppercase italic leading-[1.1] tracking-tighter line-clamp-2">
+               "{report.description}"
+             </h3>
           </div>
-        )}
+
+          {showActions && (
+            <div className="pt-6 mt-auto border-t-4 border-foreground/5 flex items-center gap-4">
+              <div className="relative flex-1">
+                <select 
+                  className="w-full h-14 bg-white border-4 border-foreground rounded-2xl font-black text-xs uppercase px-4 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] appearance-none cursor-pointer hover:shadow-none hover:translate-x-1 hover:translate-y-1 transition-all"
+                  value={report.status}
+                  onChange={(e) => onStatusChange?.(report.id, e.target.value as Status)}
+                >
+                  <option value="open">Open Incident</option>
+                  <option value="in-progress">Active Response</option>
+                  <option value="resolved">Clear Site</option>
+                </select>
+                <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
+                  <PlayCircle className="h-5 w-5 opacity-40" />
+                </div>
+              </div>
+              
+              <Button 
+                variant="destructive" 
+                size="icon" 
+                className="h-14 w-14 border-4 border-foreground rounded-2xl shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-1 hover:translate-y-1 transition-all shrink-0"
+                onClick={() => onDelete?.(report.id)}
+              >
+                <Trash2 className="h-6 w-6" />
+              </Button>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
 }
-
-import { Trash2 } from "lucide-react";
