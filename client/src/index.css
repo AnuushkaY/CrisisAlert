@@ -23,115 +23,87 @@
   --color-border: hsl(var(--border));
   --color-input: hsl(var(--input));
   --color-ring: hsl(var(--ring));
-  --color-chart-1: hsl(var(--chart-1));
-  --color-chart-2: hsl(var(--chart-2));
-  --color-chart-3: hsl(var(--chart-3));
-  --color-chart-4: hsl(var(--chart-4));
-  --color-chart-5: hsl(var(--chart-5));
   
-  /* Status Colors */
-  --color-status-open: hsl(var(--status-open));
-  --color-status-progress: hsl(var(--status-progress));
-  --color-status-resolved: hsl(var(--status-resolved));
-
-  --font-sans: 'Inter', sans-serif;
-  --font-display: 'Oswald', sans-serif;
+  --font-sans: 'Plus Jakarta Sans', sans-serif;
+  --font-display: 'Outfit', sans-serif;
   
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
+  --radius-lg: 1rem;
+  --radius-md: 0.75rem;
+  --radius-sm: 0.5rem;
 }
 
 :root {
-  /* Fresh, Nature-inspired Palette with Industrial Edge */
-  --background: 210 20% 98%;   /* Very light cool gray */
-  --foreground: 220 15% 15%;   /* Deep charcoal */
+  /* Ultra-modern "Emerald Tech" palette */
+  --background: 160 20% 98%;
+  --foreground: 160 50% 5%;
   
   --card: 0 0% 100%;
-  --card-foreground: 220 15% 15%;
+  --card-foreground: 160 50% 5%;
   
   --popover: 0 0% 100%;
-  --popover-foreground: 220 15% 15%;
+  --popover-foreground: 160 50% 5%;
   
-  /* Primary Green - Trustworthy, Ecological */
-  --primary: 150 60% 35%;
+  --primary: 162 80% 30%; /* Deep Emerald */
   --primary-foreground: 0 0% 100%;
   
-  /* Secondary - Neutral utility */
-  --secondary: 210 20% 94%;
-  --secondary-foreground: 220 15% 20%;
+  --secondary: 160 30% 94%;
+  --secondary-foreground: 162 80% 20%;
   
-  --muted: 210 20% 94%;
-  --muted-foreground: 220 10% 50%;
+  --muted: 160 10% 94%;
+  --muted-foreground: 160 10% 45%;
   
-  --accent: 150 40% 95%;     /* Very light green tint */
-  --accent-foreground: 150 60% 30%;
+  --accent: 162 80% 30%;
+  --accent-foreground: 162 80% 30%;
   
   --destructive: 0 84% 60%;
   --destructive-foreground: 0 0% 98%;
   
-  --border: 220 15% 90%;
-  --input: 220 15% 90%;
-  --ring: 150 60% 35%;
+  --border: 160 20% 90%;
+  --input: 160 20% 90%;
+  --ring: 162 80% 30%;
   
-  --radius: 0.5rem;
-  
-  /* Status Colors */
-  --status-open: 0 84% 60%;       /* Red */
-  --status-progress: 38 92% 50%;  /* Amber/Yellow */
-  --status-resolved: 150 60% 35%; /* Green */
+  --status-open: 0 84% 60%;
+  --status-progress: 45 92% 50%;
+  --status-resolved: 162 80% 30%;
 }
 
 .dark {
-  --background: 220 20% 10%;
-  --foreground: 210 20% 98%;
+  --background: 160 30% 4%;
+  --foreground: 160 20% 98%;
   
-  --card: 220 20% 12%;
-  --card-foreground: 210 20% 98%;
+  --card: 160 30% 7%;
+  --card-foreground: 160 20% 98%;
   
-  --popover: 220 20% 12%;
-  --popover-foreground: 210 20% 98%;
+  --primary: 162 70% 45%;
+  --primary-foreground: 160 30% 4%;
   
-  --primary: 150 50% 45%;
-  --primary-foreground: 0 0% 100%;
-  
-  --secondary: 217 19% 27%;
-  --secondary-foreground: 210 20% 98%;
-  
-  --muted: 217 19% 27%;
-  --muted-foreground: 215 20% 65%;
-  
-  --accent: 217 19% 27%;
-  --accent-foreground: 210 20% 98%;
-  
-  --destructive: 0 62% 30%;
-  --destructive-foreground: 210 20% 98%;
-  
-  --border: 217 19% 27%;
-  --input: 217 19% 27%;
-  --ring: 150 50% 45%;
+  --border: 160 30% 15%;
+  --input: 160 30% 15%;
 }
 
 @layer base {
   * {
-    @apply border-border;
+    @apply border-border selection:bg-primary/20;
   }
   body {
     @apply font-sans antialiased bg-background text-foreground;
+    background-image: 
+      radial-gradient(at 0% 0%, hsla(162, 80%, 30%, 0.05) 0px, transparent 50%),
+      radial-gradient(at 100% 100%, hsla(162, 80%, 30%, 0.03) 0px, transparent 50%);
   }
   h1, h2, h3, h4, h5, h6 {
-    @apply font-display tracking-wide;
+    @apply font-display font-bold tracking-tight;
   }
 }
 
-/* Leaflet Overrides for better aesthetics */
-.leaflet-popup-content-wrapper {
-  @apply rounded-lg shadow-lg border border-border p-0 overflow-hidden;
+.glass-panel {
+  @apply bg-white/70 backdrop-blur-xl border border-white/20 shadow-xl shadow-primary/5;
 }
-.leaflet-popup-content {
-  margin: 0 !important;
-  width: 100% !important;
+
+.dark .glass-panel {
+  @apply bg-black/40 backdrop-blur-xl border-white/5 shadow-none;
 }
+
 .leaflet-container {
-  @apply w-full h-full z-0 font-sans;
+  @apply grayscale-[0.2] contrast-[1.1] rounded-2xl;
 }

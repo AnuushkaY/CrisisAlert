@@ -1,6 +1,6 @@
 import { useStore, Report } from "@/lib/store";
 import { Button } from "@/components/ui/button";
-import { Plus, LogOut, Trash2, Camera, MapPin, LayoutGrid, Map as MapIcon } from "lucide-react";
+import { Plus, LogOut, Trash2, Camera, MapPin, LayoutGrid, Map as MapIcon, Globe } from "lucide-react";
 import ReportCard from "@/components/report-card";
 import { useLocation } from "wouter";
 import { useState, useRef } from "react";
@@ -86,49 +86,53 @@ export default function CitizenDashboard() {
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="sticky top-0 z-20 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container mx-auto flex h-14 items-center justify-between px-4">
-          <div className="font-display font-bold text-xl text-primary flex items-center gap-2">
-            EcoWatch <span className="text-xs font-sans text-muted-foreground px-2 py-0.5 bg-muted rounded">Citizen</span>
+      <header className="sticky top-0 z-30 border-b bg-background/80 backdrop-blur-xl">
+        <div className="container mx-auto flex h-16 items-center justify-between px-6">
+          <div className="font-display font-extrabold text-2xl text-primary tracking-tighter flex items-center gap-2">
+            <Globe className="h-6 w-6" />
+            EnvironmentTech
           </div>
-          <div className="flex items-center gap-2 sm:gap-4">
-            <span className="text-sm font-medium hidden sm:inline-block">Hi, {user.name}</span>
-            <Button variant="ghost" size="icon" onClick={() => { logout(); setLocation("/"); }}>
+          <div className="flex items-center gap-4">
+            <div className="flex flex-col items-end hidden sm:flex">
+              <span className="text-sm font-bold">{user.name}</span>
+              <span className="text-[10px] text-primary font-bold uppercase tracking-widest">Active Citizen</span>
+            </div>
+            <Button variant="outline" size="icon" className="rounded-full hover:bg-destructive/10 hover:text-destructive transition-colors" onClick={() => { logout(); setLocation("/"); }}>
               <LogOut className="h-4 w-4" />
             </Button>
           </div>
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-6">
-        <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <h1 className="text-3xl font-bold tracking-tight font-display">Dashboard</h1>
-            <p className="text-muted-foreground">Monitor your reports and view city hotspots.</p>
+      <main className="container mx-auto px-6 py-10">
+        <div className="mb-12 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+          <div className="space-y-1">
+            <h1 className="text-4xl font-extrabold tracking-tight font-display">Citizen Dashboard</h1>
+            <p className="text-lg text-muted-foreground font-medium">Be the eyes of your community. Report, track, and clean.</p>
           </div>
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
-              <Button size="lg" className="rounded-full shadow-lg hover:shadow-primary/20 transition-all">
-                <Plus className="mr-2 h-5 w-5" /> Report Hotspot
+              <Button size="lg" className="rounded-2xl h-14 px-8 text-lg font-bold shadow-xl shadow-primary/20 hover:scale-105 transition-all">
+                <Plus className="mr-2 h-6 w-6" /> Create New Report
               </Button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px]">
+            <DialogContent className="sm:max-w-[425px] rounded-[2rem]">
               <DialogHeader>
-                <DialogTitle>Report Waste Hotspot</DialogTitle>
+                <DialogTitle className="text-2xl">New Waste Report</DialogTitle>
               </DialogHeader>
-              <div className="grid gap-4 py-4">
+              <div className="grid gap-6 py-4">
                 <div className="grid gap-2">
-                  <Label>Evidence Photo</Label>
+                  <Label className="font-bold text-xs uppercase tracking-widest opacity-60">Visual Evidence</Label>
                   <div 
                     onClick={() => fileInputRef.current?.click()}
-                    className="flex h-40 cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-muted-foreground/25 bg-muted/50 hover:bg-muted transition-colors"
+                    className="flex h-48 cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed border-primary/20 bg-primary/5 hover:bg-primary/10 transition-colors group overflow-hidden"
                   >
                     {newReport.image ? (
-                      <img src={newReport.image} className="h-full w-full object-cover rounded-lg" alt="Preview" />
+                      <img src={newReport.image} className="h-full w-full object-cover" alt="Preview" />
                     ) : (
-                      <div className="flex flex-col items-center text-muted-foreground text-center p-4">
-                        <Camera className="mb-2 h-8 w-8 opacity-50" />
-                        <span className="text-xs font-medium">Capture or upload photo</span>
+                      <div className="flex flex-col items-center text-primary text-center p-6">
+                        <Camera className="mb-3 h-10 w-10 opacity-50 group-hover:scale-110 transition-transform" />
+                        <span className="text-sm font-bold uppercase tracking-wider">Tap to Capture</span>
                       </div>
                     )}
                     <input type="file" ref={fileInputRef} className="hidden" accept="image/*" onChange={handleImageUpload} />
@@ -136,58 +140,59 @@ export default function CitizenDashboard() {
                 </div>
                 
                 <div className="grid gap-2">
-                  <Label>Description</Label>
+                  <Label className="font-bold text-xs uppercase tracking-widest opacity-60">Observation</Label>
                   <Textarea 
-                    placeholder="e.g. Broken furniture on the corner of..." 
+                    placeholder="Describe the waste hotspot..." 
+                    className="rounded-xl border-2 min-h-[100px]"
                     value={newReport.description}
                     onChange={(e) => setNewReport(prev => ({ ...prev, description: e.target.value }))}
                   />
                 </div>
 
                 <div className="grid gap-2">
-                  <Label>Location</Label>
+                  <Label className="font-bold text-xs uppercase tracking-widest opacity-60">Geospatial Data</Label>
                   <div className="flex gap-2">
                     <Input 
-                      value={`${newReport.lat.toFixed(4)}, ${newReport.lng.toFixed(4)}`} 
+                      value={`${newReport.lat.toFixed(6)}, ${newReport.lng.toFixed(6)}`} 
                       readOnly 
-                      className="bg-muted"
+                      className="rounded-xl bg-muted border-0 font-mono text-xs"
                     />
-                    <Button type="button" variant="secondary" size="icon" onClick={getLocation}>
+                    <Button type="button" variant="secondary" size="icon" className="rounded-xl shrink-0" onClick={getLocation}>
                       <MapPin className="h-4 w-4" />
                     </Button>
                   </div>
                 </div>
               </div>
               <DialogFooter>
-                <Button onClick={handleSubmit} className="w-full">Submit Report</Button>
+                <Button onClick={handleSubmit} className="w-full h-14 rounded-xl text-lg font-bold">Transmit Report</Button>
               </DialogFooter>
             </DialogContent>
           </Dialog>
         </div>
 
         <Tabs defaultValue="my-reports" className="w-full">
-          <TabsList className="grid w-full max-w-[400px] grid-cols-2 mb-8">
-            <TabsTrigger value="my-reports" className="flex items-center gap-2">
-              <LayoutGrid className="h-4 w-4" /> My Reports
+          <TabsList className="inline-flex h-12 items-center justify-center rounded-xl bg-muted p-1 mb-10 border shadow-inner">
+            <TabsTrigger value="my-reports" className="flex items-center gap-2 rounded-lg px-6 py-2 font-bold data-[state=active]:bg-background data-[state=active]:shadow-sm">
+              <LayoutGrid className="h-4 w-4" /> Activity
             </TabsTrigger>
-            <TabsTrigger value="city-map" className="flex items-center gap-2">
-              <MapIcon className="h-4 w-4" /> City Map
+            <TabsTrigger value="city-map" className="flex items-center gap-2 rounded-lg px-6 py-2 font-bold data-[state=active]:bg-background data-[state=active]:shadow-sm">
+              <MapIcon className="h-4 w-4" /> Global Grid
             </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="my-reports" className="animate-in fade-in duration-300">
+          <TabsContent value="my-reports" className="animate-in fade-in duration-500">
             {myReports.length === 0 ? (
-              <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed py-16 text-center">
-                <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
-                  <Trash2 className="h-8 w-8 text-primary" />
+              <div className="flex flex-col items-center justify-center rounded-[2.5rem] border-2 border-dashed border-primary/10 py-24 text-center glass-panel">
+                <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-primary/10">
+                  <Trash2 className="h-10 w-10 text-primary" />
                 </div>
-                <h3 className="mt-4 text-xl font-semibold">No reports yet</h3>
-                <p className="mx-auto mt-2 max-w-[300px] text-muted-foreground">
-                  You haven't reported any hotspots. Use the button above to help clean your city.
+                <h3 className="mt-6 text-2xl font-extrabold font-display">Zero Incidents Reported</h3>
+                <p className="mx-auto mt-3 max-w-[340px] text-muted-foreground font-medium">
+                  The streets look clear through your eyes. If you spot a hotspot, you know what to do.
                 </p>
               </div>
             ) : (
-              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
                 {myReports.map((report) => (
                   <ReportCard key={report.id} report={report} />
                 ))}
@@ -195,7 +200,7 @@ export default function CitizenDashboard() {
             )}
           </TabsContent>
 
-          <TabsContent value="city-map" className="h-[600px] rounded-2xl overflow-hidden border shadow-lg animate-in zoom-in-95 duration-300">
+          <TabsContent value="city-map" className="h-[700px] rounded-[2.5rem] overflow-hidden border-4 border-white shadow-2xl animate-in zoom-in-95 duration-500 bg-muted">
             <MapView reports={reports} />
           </TabsContent>
         </Tabs>
