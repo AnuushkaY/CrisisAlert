@@ -156,7 +156,7 @@ export default function CitizenDashboard() {
                   <DialogHeader>
                     <DialogTitle className="text-4xl font-black uppercase italic tracking-tighter">New Field Report</DialogTitle>
                   </DialogHeader>
-                  <div className="grid gap-8 py-6">
+                  <div className="grid gap-8 py-6 max-h-[70vh] overflow-y-auto pr-2">
                     <div className="grid gap-3">
                       <Label className="font-black text-sm uppercase tracking-widest">Evidence Capture</Label>
                       <div 
