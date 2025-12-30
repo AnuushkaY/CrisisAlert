@@ -127,13 +127,9 @@
   outline: none !important;
 }
 
-/* Maintain the centering transform for the dialog itself, BUT lock the chatbot specifically if needed */
-[role="dialog"]:not(.chatbot-dialog) {
+/* Maintain the centering transform for all dialogs to ensure they are fully inside viewport */
+[role="dialog"] {
   transform: translate(-50%, -50%) !important;
-}
-
-[role="dialog"].chatbot-dialog {
-  transform: none !important;
 }
 
 [role="dialog"], 
