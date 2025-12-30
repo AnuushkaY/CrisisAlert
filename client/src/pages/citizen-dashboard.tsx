@@ -152,11 +152,11 @@ export default function CitizenDashboard() {
                     <Plus className="mr-4 h-10 w-10" /> Spot Something?
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="sm:max-w-[500px] neo-card p-10 z-[100]">
+                <DialogContent className="neo-card p-10">
                   <DialogHeader>
                     <DialogTitle className="text-4xl font-black uppercase italic tracking-tighter">New Field Report</DialogTitle>
                   </DialogHeader>
-                  <div className="grid gap-8 py-6 max-h-[70vh] overflow-y-auto pr-2">
+                  <div className="grid gap-8 py-6">
                     <div className="grid gap-3">
                       <Label className="font-black text-sm uppercase tracking-widest">Evidence Capture</Label>
                       <div 

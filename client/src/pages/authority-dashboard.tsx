@@ -252,11 +252,11 @@ export default function AuthorityDashboard() {
 
       {/* Resolution Dialog */}
       <Dialog open={!!resolvingReportId} onOpenChange={() => setResolvingReportId(null)}>
-        <DialogContent className="sm:max-w-[425px] neo-card p-10 z-[150] fixed top-[50%] left-[50%] -translate-x-1/2 -translate-y-1/2">
+        <DialogContent className="neo-card p-10">
           <DialogHeader>
             <DialogTitle className="text-3xl font-black uppercase italic tracking-tighter">Verify Cleanup</DialogTitle>
           </DialogHeader>
-          <div className="grid gap-6 py-4 max-h-[60vh] overflow-y-auto">
+          <div className="grid gap-6 py-4">
             <div className="grid gap-3">
               <Label className="font-black text-sm uppercase tracking-widest">Post-Cleanup Evidence</Label>
               <div 
