@@ -27,83 +27,75 @@
   --font-sans: 'Plus Jakarta Sans', sans-serif;
   --font-display: 'Outfit', sans-serif;
   
-  --radius-lg: 1rem;
+  --radius-lg: 1.25rem;
   --radius-md: 0.75rem;
   --radius-sm: 0.5rem;
 }
 
 :root {
-  /* Ultra-modern "Emerald Tech" palette */
-  --background: 160 20% 98%;
-  --foreground: 160 50% 5%;
+  /* Playful Neo-Brutalist Palette */
+  --background: 40 30% 98%;   /* Warm off-white / cream */
+  --foreground: 220 15% 15%;  /* Near-black / charcoal */
   
   --card: 0 0% 100%;
-  --card-foreground: 160 50% 5%;
+  --card-foreground: 220 15% 15%;
   
   --popover: 0 0% 100%;
-  --popover-foreground: 160 50% 5%;
+  --popover-foreground: 220 15% 15%;
   
-  --primary: 162 80% 30%; /* Deep Emerald */
-  --primary-foreground: 0 0% 100%;
+  --primary: 220 15% 15%;    /* Charcoal for high contrast buttons */
+  --primary-foreground: 40 30% 98%;
   
-  --secondary: 160 30% 94%;
-  --secondary-foreground: 162 80% 20%;
+  --secondary: 45 90% 92%;   /* Soft yellow */
+  --secondary-foreground: 45 90% 20%;
   
-  --muted: 160 10% 94%;
-  --muted-foreground: 160 10% 45%;
+  --muted: 40 10% 92%;
+  --muted-foreground: 220 10% 45%;
   
-  --accent: 162 80% 30%;
-  --accent-foreground: 162 80% 30%;
+  --accent: 330 70% 92%;     /* Pastel pink */
+  --accent-foreground: 330 70% 30%;
+  
+  --blue-card: 200 70% 92%;  /* Light blue */
   
   --destructive: 0 84% 60%;
   --destructive-foreground: 0 0% 98%;
   
-  --border: 160 20% 90%;
-  --input: 160 20% 90%;
-  --ring: 162 80% 30%;
-  
-  --status-open: 0 84% 60%;
-  --status-progress: 45 92% 50%;
-  --status-resolved: 162 80% 30%;
-}
-
-.dark {
-  --background: 160 30% 4%;
-  --foreground: 160 20% 98%;
-  
-  --card: 160 30% 7%;
-  --card-foreground: 160 20% 98%;
-  
-  --primary: 162 70% 45%;
-  --primary-foreground: 160 30% 4%;
-  
-  --border: 160 30% 15%;
-  --input: 160 30% 15%;
+  --border: 220 15% 15%;     /* Thick black outlines */
+  --input: 220 15% 15%;
+  --ring: 220 15% 15%;
 }
 
 @layer base {
   * {
-    @apply border-border selection:bg-primary/20;
+    @apply border-foreground/10;
   }
   body {
     @apply font-sans antialiased bg-background text-foreground;
-    background-image: 
-      radial-gradient(at 0% 0%, hsla(162, 80%, 30%, 0.05) 0px, transparent 50%),
-      radial-gradient(at 100% 100%, hsla(162, 80%, 30%, 0.03) 0px, transparent 50%);
+    background-image: radial-gradient(var(--foreground) 1px, transparent 1px);
+    background-size: 32px 32px;
+    background-attachment: fixed;
+    background-opacity: 0.05;
   }
   h1, h2, h3, h4, h5, h6 {
-    @apply font-display font-bold tracking-tight;
+    @apply font-display font-black tracking-tight uppercase;
   }
 }
 
-.glass-panel {
-  @apply bg-white/70 backdrop-blur-xl border border-white/20 shadow-xl shadow-primary/5;
+.neo-card {
+  @apply bg-white border-2 border-foreground rounded-[1.25rem] shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)];
 }
 
-.dark .glass-panel {
-  @apply bg-black/40 backdrop-blur-xl border-white/5 shadow-none;
+.neo-button {
+  @apply bg-foreground text-background font-bold px-6 py-3 rounded-full border-2 border-foreground shadow-[4px_4px_0px_0px_rgba(0,0,0,0.2)] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px] transition-all;
 }
+
+.neo-badge {
+  @apply px-3 py-1 rounded-full border-2 border-foreground font-bold text-xs uppercase tracking-wider;
+}
+
+.tilted-left { transform: rotate(-1deg); }
+.tilted-right { transform: rotate(1.2deg); }
 
 .leaflet-container {
-  @apply grayscale-[0.2] contrast-[1.1] rounded-2xl;
+  @apply border-2 border-foreground rounded-[1.5rem] shadow-[8px_8px_0px_0px_rgba(0,0,0,1)];
 }
