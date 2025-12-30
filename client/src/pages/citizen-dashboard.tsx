@@ -1,6 +1,6 @@
 import { useStore, Report } from "@/lib/store";
 import { Button } from "@/components/ui/button";
-import { Plus, LogOut, Trash2, Camera, MapPin } from "lucide-react";
+import { Plus, LogOut, Trash2, Camera, MapPin, LayoutGrid, Map as MapIcon } from "lucide-react";
 import ReportCard from "@/components/report-card";
 import { useLocation } from "wouter";
 import { useState, useRef } from "react";
@@ -9,6 +9,9 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
+import MapView from "@/components/map-view";
+import Chatbot from "@/components/chatbot";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function CitizenDashboard() {
   const { user, reports, logout, addReport } = useStore();
@@ -82,12 +85,14 @@ export default function CitizenDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-background pb-20">
-      <header className="sticky top-0 z-10 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container flex h-14 items-center justify-between px-4">
-          <div className="font-display font-bold text-xl text-primary">EcoWatch</div>
-          <div className="flex items-center gap-4">
-            <span className="text-sm font-medium hidden sm:inline-block">Welcome, {user.name}</span>
+    <div className="min-h-screen bg-background">
+      <header className="sticky top-0 z-20 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div className="container mx-auto flex h-14 items-center justify-between px-4">
+          <div className="font-display font-bold text-xl text-primary flex items-center gap-2">
+            EcoWatch <span className="text-xs font-sans text-muted-foreground px-2 py-0.5 bg-muted rounded">Citizen</span>
+          </div>
+          <div className="flex items-center gap-2 sm:gap-4">
+            <span className="text-sm font-medium hidden sm:inline-block">Hi, {user.name}</span>
             <Button variant="ghost" size="icon" onClick={() => { logout(); setLocation("/"); }}>
               <LogOut className="h-4 w-4" />
             </Button>
@@ -95,13 +100,16 @@ export default function CitizenDashboard() {
         </div>
       </header>
 
-      <main className="container px-4 py-6">
-        <div className="mb-6 flex items-center justify-between">
-          <h2 className="text-2xl font-bold tracking-tight font-display">My Reports</h2>
+      <main className="container mx-auto px-4 py-6">
+        <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight font-display">Dashboard</h1>
+            <p className="text-muted-foreground">Monitor your reports and view city hotspots.</p>
+          </div>
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
-              <Button className="rounded-full shadow-lg">
-                <Plus className="mr-2 h-4 w-4" /> New Report
+              <Button size="lg" className="rounded-full shadow-lg hover:shadow-primary/20 transition-all">
+                <Plus className="mr-2 h-5 w-5" /> Report Hotspot
               </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
@@ -113,14 +121,14 @@ export default function CitizenDashboard() {
                   <Label>Evidence Photo</Label>
                   <div 
                     onClick={() => fileInputRef.current?.click()}
-                    className="flex h-40 cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-muted-foreground/25 bg-muted/50 hover:bg-muted"
+                    className="flex h-40 cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-muted-foreground/25 bg-muted/50 hover:bg-muted transition-colors"
                   >
                     {newReport.image ? (
                       <img src={newReport.image} className="h-full w-full object-cover rounded-lg" alt="Preview" />
                     ) : (
-                      <div className="flex flex-col items-center text-muted-foreground">
-                        <Camera className="mb-2 h-8 w-8" />
-                        <span className="text-xs">Tap to upload photo</span>
+                      <div className="flex flex-col items-center text-muted-foreground text-center p-4">
+                        <Camera className="mb-2 h-8 w-8 opacity-50" />
+                        <span className="text-xs font-medium">Capture or upload photo</span>
                       </div>
                     )}
                     <input type="file" ref={fileInputRef} className="hidden" accept="image/*" onChange={handleImageUpload} />
@@ -130,7 +138,7 @@ export default function CitizenDashboard() {
                 <div className="grid gap-2">
                   <Label>Description</Label>
                   <Textarea 
-                    placeholder="Describe the waste and location details..." 
+                    placeholder="e.g. Broken furniture on the corner of..." 
                     value={newReport.description}
                     onChange={(e) => setNewReport(prev => ({ ...prev, description: e.target.value }))}
                   />
@@ -142,9 +150,9 @@ export default function CitizenDashboard() {
                     <Input 
                       value={`${newReport.lat.toFixed(4)}, ${newReport.lng.toFixed(4)}`} 
                       readOnly 
-                      className="bg-muted text-muted-foreground"
+                      className="bg-muted"
                     />
-                    <Button type="button" variant="outline" size="icon" onClick={getLocation}>
+                    <Button type="button" variant="secondary" size="icon" onClick={getLocation}>
                       <MapPin className="h-4 w-4" />
                     </Button>
                   </div>
@@ -157,24 +165,43 @@ export default function CitizenDashboard() {
           </Dialog>
         </div>
 
-        {myReports.length === 0 ? (
-          <div className="flex flex-col items-center justify-center rounded-lg border border-dashed p-8 text-center animate-in fade-in-50">
-            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-muted">
-              <Trash2 className="h-6 w-6 text-muted-foreground" />
-            </div>
-            <h3 className="mt-4 text-lg font-semibold">No reports yet</h3>
-            <p className="mb-4 mt-2 text-sm text-muted-foreground">
-              You haven't submitted any waste reports. Spotted something? Report it now.
-            </p>
-          </div>
-        ) : (
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {myReports.map((report) => (
-              <ReportCard key={report.id} report={report} />
-            ))}
-          </div>
-        )}
+        <Tabs defaultValue="my-reports" className="w-full">
+          <TabsList className="grid w-full max-w-[400px] grid-cols-2 mb-8">
+            <TabsTrigger value="my-reports" className="flex items-center gap-2">
+              <LayoutGrid className="h-4 w-4" /> My Reports
+            </TabsTrigger>
+            <TabsTrigger value="city-map" className="flex items-center gap-2">
+              <MapIcon className="h-4 w-4" /> City Map
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="my-reports" className="animate-in fade-in duration-300">
+            {myReports.length === 0 ? (
+              <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed py-16 text-center">
+                <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
+                  <Trash2 className="h-8 w-8 text-primary" />
+                </div>
+                <h3 className="mt-4 text-xl font-semibold">No reports yet</h3>
+                <p className="mx-auto mt-2 max-w-[300px] text-muted-foreground">
+                  You haven't reported any hotspots. Use the button above to help clean your city.
+                </p>
+              </div>
+            ) : (
+              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                {myReports.map((report) => (
+                  <ReportCard key={report.id} report={report} />
+                ))}
+              </div>
+            )}
+          </TabsContent>
+
+          <TabsContent value="city-map" className="h-[600px] rounded-2xl overflow-hidden border shadow-lg animate-in zoom-in-95 duration-300">
+            <MapView reports={reports} />
+          </TabsContent>
+        </Tabs>
       </main>
+
+      <Chatbot />
     </div>
   );
 }

@@ -1,12 +1,13 @@
 import { useStore, Status } from "@/lib/store";
 import { Button } from "@/components/ui/button";
-import { LogOut, Filter, Map as MapIcon, List } from "lucide-react";
+import { LogOut, Filter, Map as MapIcon, List, ShieldCheck } from "lucide-react";
 import ReportCard from "@/components/report-card";
 import { useLocation } from "wouter";
 import { useState } from "react";
 import MapView from "@/components/map-view";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import Chatbot from "@/components/chatbot";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -28,32 +29,38 @@ export default function AuthorityDashboard() {
   const filteredReports = reports.filter(r => statusFilter.includes(r.status));
 
   return (
-    <div className="flex h-screen flex-col bg-background">
-      <header className="flex h-14 shrink-0 items-center justify-between border-b px-4 lg:px-6 bg-card z-20 shadow-sm">
+    <div className="flex h-screen flex-col bg-background overflow-hidden">
+      <header className="flex h-16 shrink-0 items-center justify-between border-b px-6 bg-card z-30 shadow-sm">
         <div className="flex items-center gap-4">
-          <div className="font-display font-bold text-xl text-primary">EcoWatch <span className="text-muted-foreground font-sans text-sm font-normal ml-2">Authority Portal</span></div>
+          <div className="font-display font-bold text-2xl text-primary flex items-center gap-3">
+            <ShieldCheck className="h-6 w-6" />
+            EcoWatch <span className="text-xs font-sans text-muted-foreground px-2 py-0.5 bg-muted rounded uppercase tracking-wider font-bold">Admin</span>
+          </div>
         </div>
-        <div className="flex items-center gap-2">
-          <span className="text-sm font-medium mr-2 hidden sm:inline-block">{user.name}</span>
-          <Button variant="ghost" size="icon" onClick={() => { logout(); setLocation("/"); }}>
+        <div className="flex items-center gap-4">
+          <div className="flex flex-col items-end hidden sm:flex">
+            <span className="text-sm font-bold">{user.name}</span>
+            <span className="text-[10px] text-muted-foreground uppercase tracking-widest">Environmental Officer</span>
+          </div>
+          <Button variant="outline" size="icon" className="rounded-full h-10 w-10" onClick={() => { logout(); setLocation("/"); }}>
             <LogOut className="h-4 w-4" />
           </Button>
         </div>
       </header>
 
       <div className="flex flex-1 overflow-hidden">
-        {/* Sidebar List (Always visible on desktop, toggle on mobile usually but keeping simple here) */}
-        <div className="w-full max-w-sm flex-col border-r bg-muted/10 hidden md:flex">
-          <div className="p-4 border-b space-y-4">
+        {/* Sidebar List (Always visible on desktop) */}
+        <div className="w-full max-w-sm flex-col border-r bg-muted/5 hidden md:flex">
+          <div className="p-6 border-b space-y-6">
             <div className="flex items-center justify-between">
-              <h2 className="font-semibold">Reports ({filteredReports.length})</h2>
+              <h2 className="font-bold font-display text-lg">Active Reports</h2>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="outline" size="sm" className="h-8">
-                    <Filter className="mr-2 h-3 w-3" /> Filter
+                  <Button variant="ghost" size="sm" className="h-8 hover:bg-muted">
+                    <Filter className="mr-2 h-4 w-4" /> Filter
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
+                <DropdownMenuContent align="end" className="w-48">
                   <DropdownMenuCheckboxItem 
                     checked={statusFilter.includes('open')}
                     onCheckedChange={(checked) => {
@@ -85,60 +92,30 @@ export default function AuthorityDashboard() {
               </DropdownMenu>
             </div>
             
-            <div className="flex gap-2">
-              <Badge variant="outline" className="bg-destructive/10 text-destructive border-0">
-                {reports.filter(r => r.status === 'open').length} Open
-              </Badge>
-              <Badge variant="outline" className="bg-yellow-500/10 text-yellow-600 border-0">
-                {reports.filter(r => r.status === 'in-progress').length} In Progress
-              </Badge>
-              <Badge variant="outline" className="bg-green-500/10 text-green-600 border-0">
-                {reports.filter(r => r.status === 'resolved').length} Resolved
-              </Badge>
+            <div className="grid grid-cols-3 gap-2">
+              <div className="flex flex-col p-2 bg-destructive/10 rounded-lg text-center">
+                <span className="text-xl font-bold text-destructive">{reports.filter(r => r.status === 'open').length}</span>
+                <span className="text-[10px] uppercase font-bold text-destructive opacity-70">Open</span>
+              </div>
+              <div className="flex flex-col p-2 bg-yellow-500/10 rounded-lg text-center">
+                <span className="text-xl font-bold text-yellow-600">{reports.filter(r => r.status === 'in-progress').length}</span>
+                <span className="text-[10px] uppercase font-bold text-yellow-600 opacity-70">Active</span>
+              </div>
+              <div className="flex flex-col p-2 bg-green-500/10 rounded-lg text-center">
+                <span className="text-xl font-bold text-green-600">{reports.filter(r => r.status === 'resolved').length}</span>
+                <span className="text-[10px] uppercase font-bold text-green-600 opacity-70">Solved</span>
+              </div>
             </div>
           </div>
           
-          <ScrollArea className="flex-1 p-4">
+          <ScrollArea className="flex-1 p-4 bg-muted/20">
             <div className="space-y-4">
-              {filteredReports.map(report => (
-                <ReportCard 
-                  key={report.id} 
-                  report={report} 
-                  showActions 
-                  onStatusChange={updateReportStatus}
-                  onDelete={deleteReport}
-                />
-              ))}
-            </div>
-          </ScrollArea>
-        </div>
-
-        {/* Main Content Area */}
-        <div className="flex-1 relative">
-          {/* Mobile View Toggle */}
-          <div className="absolute top-4 right-4 z-10 md:hidden bg-background rounded-lg shadow border p-1 flex">
-             <Button 
-              variant={viewMode === 'map' ? 'default' : 'ghost'} 
-              size="sm" 
-              onClick={() => setViewMode('map')}
-            >
-              <MapIcon className="h-4 w-4" />
-            </Button>
-            <Button 
-              variant={viewMode === 'list' ? 'default' : 'ghost'} 
-              size="sm" 
-              onClick={() => setViewMode('list')}
-            >
-              <List className="h-4 w-4" />
-            </Button>
-          </div>
-
-          {viewMode === 'map' || window.innerWidth >= 768 ? (
-             <MapView reports={filteredReports} />
-          ) : (
-            <ScrollArea className="h-full p-4">
-              <div className="space-y-4 pt-10">
-                {filteredReports.map(report => (
+              {filteredReports.length === 0 ? (
+                <div className="text-center py-10">
+                  <p className="text-sm text-muted-foreground">No reports match your filters.</p>
+                </div>
+              ) : (
+                filteredReports.map(report => (
                   <ReportCard 
                     key={report.id} 
                     report={report} 
@@ -146,12 +123,56 @@ export default function AuthorityDashboard() {
                     onStatusChange={updateReportStatus}
                     onDelete={deleteReport}
                   />
-                ))}
-              </div>
-            </ScrollArea>
-          )}
+                ))
+              )}
+            </div>
+          </ScrollArea>
+        </div>
+
+        {/* Main Content Area */}
+        <div className="flex-1 relative">
+          {/* Mobile View Toggle */}
+          <div className="absolute top-6 right-6 z-20 md:hidden flex gap-2">
+             <Button 
+              className="h-12 w-12 rounded-full shadow-lg border-2"
+              variant={viewMode === 'map' ? 'default' : 'secondary'} 
+              size="icon" 
+              onClick={() => setViewMode('map')}
+            >
+              <MapIcon className="h-5 w-5" />
+            </Button>
+            <Button 
+              className="h-12 w-12 rounded-full shadow-lg border-2"
+              variant={viewMode === 'list' ? 'default' : 'secondary'} 
+              size="icon" 
+              onClick={() => setViewMode('list')}
+            >
+              <List className="h-5 w-5" />
+            </Button>
+          </div>
+
+          <div className="h-full w-full animate-in fade-in duration-500">
+            {viewMode === 'map' || window.innerWidth >= 768 ? (
+               <MapView reports={filteredReports} className="h-full w-full" />
+            ) : (
+              <ScrollArea className="h-full p-4 bg-muted/20">
+                <div className="space-y-4 pt-16">
+                  {filteredReports.map(report => (
+                    <ReportCard 
+                      key={report.id} 
+                      report={report} 
+                      showActions 
+                      onStatusChange={updateReportStatus}
+                      onDelete={deleteReport}
+                    />
+                  ))}
+                </div>
+              </ScrollArea>
+            )}
+          </div>
         </div>
       </div>
+      <Chatbot />
     </div>
   );
 }
