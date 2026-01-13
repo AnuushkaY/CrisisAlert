@@ -40,7 +40,7 @@ export default function Chatbot() {
       } else if (lowerMsg.includes("authority") || lowerMsg.includes("admin")) {
         botResponse = "Authorities use the Command Center to track reports and must upload AI-verified cleanup photos to resolve issues.";
       } else if (lowerMsg.includes("hello") || lowerMsg.includes("hi")) {
-        botResponse = "Hi there! I'm your EnvironmentTech assistant. Ready to make the neighborhood shine?";
+        botResponse = "Hi there! I'm your CrisisAlert assistant. Ready to help with emergency response and community safety?";
       } else if (lowerMsg.includes("trash") || lowerMsg.includes("waste")) {
         botResponse = "We use MobileNet AI to identify waste. Make sure your photos are bright and the trash is clearly visible!";
       }

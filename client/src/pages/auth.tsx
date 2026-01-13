@@ -18,7 +18,12 @@ export default function AuthPage() {
     if (!email || !password) return; 
     try {
       login(email, role, password);
-      setLocation(role === 'authority' ? '/authority' : '/citizen');
+      const routeMap = {
+        citizen: '/citizen',
+        coordinator: '/coordinator',
+        agency: '/agency'
+      };
+      setLocation(routeMap[role] || '/citizen');
     } catch (e: any) {
       alert(e.message);
     }
@@ -32,15 +37,11 @@ export default function AuthPage() {
 
       <div className="w-full max-w-md z-10 space-y-8">
         <div className="text-center space-y-4">
-          <div className="inline-flex items-center gap-2 bg-secondary neo-badge tilted-left">
-            <Sparkles className="h-3 w-3" />
-            Join the Movement
-          </div>
           <h1 className="text-6xl font-black font-display text-foreground leading-none tracking-tighter">
-            Environment<span className="text-accent-foreground">Tech</span>
+            Crisis<span className="text-accent-foreground">Alert</span>
           </h1>
           <p className="text-xl text-muted-foreground font-bold italic">
-            "Making the city shine, one report at a time!"
+            "Rapid response, community safety, one alert at a time!"
           </p>
         </div>
 
@@ -48,9 +49,10 @@ export default function AuthPage() {
           <Card className="border-0 shadow-none bg-white rounded-[1rem]">
             <CardContent className="pt-8 px-6 pb-8">
               <Tabs defaultValue="citizen" className="w-full">
-                <TabsList className="grid w-full grid-cols-2 p-1 bg-muted rounded-full mb-8 border-2 border-foreground">
-                  <TabsTrigger value="citizen" className="rounded-full py-3 font-black uppercase text-xs tracking-widest data-[state=active]:bg-foreground data-[state=active]:text-white transition-all">Citizen</TabsTrigger>
-                  <TabsTrigger value="authority" className="rounded-full py-3 font-black uppercase text-xs tracking-widest data-[state=active]:bg-foreground data-[state=active]:text-white transition-all">Authority</TabsTrigger>
+                <TabsList className="grid w-full grid-cols-3 p-1 bg-muted rounded-full mb-8 border-2 border-foreground">
+                  <TabsTrigger value="citizen" className="rounded-full py-2 font-black uppercase text-xs tracking-widest data-[state=active]:bg-foreground data-[state=active]:text-white transition-all">Citizen</TabsTrigger>
+                  <TabsTrigger value="coordinator" className="rounded-full py-2 font-black uppercase text-xs tracking-widest data-[state=active]:bg-foreground data-[state=active]:text-white transition-all">Coordinator</TabsTrigger>
+                  <TabsTrigger value="agency" className="rounded-full py-2 font-black uppercase text-xs tracking-widest data-[state=active]:bg-foreground data-[state=active]:text-white transition-all">Agency</TabsTrigger>
                 </TabsList>
                 
                 <TabsContent value="citizen" className="space-y-6 animate-in fade-in zoom-in-95">
@@ -76,11 +78,11 @@ export default function AuthPage() {
                   </Button>
                 </TabsContent>
                 
-                <TabsContent value="authority" className="space-y-6 animate-in fade-in zoom-in-95">
+                <TabsContent value="coordinator" className="space-y-6 animate-in fade-in zoom-in-95">
                   <div className="space-y-3">
-                    <Label className="text-xs font-black uppercase tracking-widest ml-1">Admin Passkey</Label>
+                    <Label className="text-xs font-black uppercase tracking-widest ml-1">Coordinator Access</Label>
                     <Input 
-                      placeholder="Admin Email" 
+                      placeholder="Coordinator Email" 
                       className="h-14 rounded-2xl border-2 border-foreground shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] focus:shadow-none focus:translate-x-[1px] focus:translate-y-[1px] transition-all bg-white font-bold"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
@@ -93,9 +95,32 @@ export default function AuthPage() {
                       onChange={(e) => setPassword(e.target.value)}
                     />
                   </div>
-                  <Button className="w-full h-16 neo-button bg-blue-400 text-foreground border-foreground text-xl uppercase tracking-tighter group" onClick={() => handleLogin('authority')}>
+                  <Button className="w-full h-16 neo-button bg-green-400 text-foreground border-foreground text-xl uppercase tracking-tighter group" onClick={() => handleLogin('coordinator')}>
                     <ShieldCheck className="mr-2 h-6 w-6" />
-                    Admin Access
+                    Coordinate Response
+                  </Button>
+                </TabsContent>
+                
+                <TabsContent value="agency" className="space-y-6 animate-in fade-in zoom-in-95">
+                  <div className="space-y-3">
+                    <Label className="text-xs font-black uppercase tracking-widest ml-1">Agency Access</Label>
+                    <Input 
+                      placeholder="Agency Email" 
+                      className="h-14 rounded-2xl border-2 border-foreground shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] focus:shadow-none focus:translate-x-[1px] focus:translate-y-[1px] transition-all bg-white font-bold"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                    />
+                    <Input 
+                      type="password"
+                      placeholder="Password" 
+                      className="h-14 rounded-2xl border-2 border-foreground shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] focus:shadow-none focus:translate-x-[1px] focus:translate-y-[1px] transition-all bg-white font-bold"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                    />
+                  </div>
+                  <Button className="w-full h-16 neo-button bg-red-400 text-foreground border-foreground text-xl uppercase tracking-tighter group" onClick={() => handleLogin('agency')}>
+                    <ShieldCheck className="mr-2 h-6 w-6" />
+                    Agency Response
                   </Button>
                 </TabsContent>
               </Tabs>

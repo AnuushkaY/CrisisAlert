@@ -1,0 +1,58 @@
+mutation CreateDemoData @transaction @auth(level: USER, insecureReason: "This mutation is used to seed demo data and is only used in development.") {
+  user_insertMany(data: [
+    {
+      id: "550e8400-e29b-41d4-a716-446655440000",
+      displayName: "demouser1",
+      email: "demouser1@example.com",
+      createdAt: "2024-01-01T00:00:00Z"
+    },
+    {
+      id: "550e8400-e29b-41d4-a716-446655440001",
+      displayName: "demouser2",
+      email: "demouser2@example.com",
+      createdAt: "2024-01-01T00:00:00Z"
+    }
+  ])
+  crisisPlan_insertMany(data: [
+    {
+      id: "650e8400-e29b-41d4-a716-446655440000",
+      name: "Crisis Plan 1",
+      description: "Example crisis plan 1",
+      createdAt: "2024-01-01T00:00:00Z",
+      updatedAt: "2024-01-01T00:00:00Z",
+      isPublic: true,
+      creatorId: "550e8400-e29b-41d4-a716-446655440000"
+    },
+    {
+      id: "650e8400-e29b-41d4-a716-446655440001",
+      name: "Crisis Plan 2",
+      description: "Example crisis plan 2",
+      createdAt: "2024-01-01T00:00:00Z",
+      updatedAt: "2024-01-01T00:00:00Z",
+      isPublic: false,
+      creatorId: "550e8400-e29b-41d4-a716-446655440001"
+    }
+  ])
+  incident_insertMany(data: [
+    {
+      id: "750e8400-e29b-41d4-a716-446655440000",
+      title: "Incident 1",
+      description: "Example incident 1",
+      createdAt: "2024-01-01T00:00:00Z",
+      updatedAt: "2024-01-01T00:00:00Z",
+      status: "active",
+      crisisPlanId: "650e8400-e29b-41d4-a716-446655440000",
+      reporterId: "550e8400-e29b-41d4-a716-446655440000"
+    },
+    {
+      id: "750e8400-e29b-41d4-a716-446655440001",
+      title: "Incident 2",
+      description: "Example incident 2",
+      createdAt: "2024-01-01T00:00:00Z",
+      updatedAt: "2024-01-01T00:00:00Z",
+      status: "inactive",
+      crisisPlanId: "650e8400-e29b-41d4-a716-446655440001",
+      reporterId: "550e8400-e29b-41d4-a716-446655440001"
+    }
+  ])
+}

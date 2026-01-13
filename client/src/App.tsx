@@ -6,14 +6,16 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/not-found";
 import AuthPage from "@/pages/auth";
 import CitizenDashboard from "@/pages/citizen-dashboard";
-import AuthorityDashboard from "@/pages/authority-dashboard";
+import CoordinatorDashboard from "@/pages/coordinator-dashboard";
+import AgencyDashboard from "@/pages/agency-dashboard";
 
 function Router() {
   return (
     <Switch>
       <Route path="/" component={AuthPage} />
       <Route path="/citizen" component={CitizenDashboard} />
-      <Route path="/authority" component={AuthorityDashboard} />
+      <Route path="/coordinator" component={CoordinatorDashboard} />
+      <Route path="/agency" component={AgencyDashboard} />
       <Route component={NotFound} />
     </Switch>
   );

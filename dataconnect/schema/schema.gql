@@ -1,0 +1,47 @@
+type User @table {
+  displayName: String!
+  email: String!
+  createdAt: Timestamp!
+  photoUrl: String
+  organization: String
+}
+
+type CrisisPlan @table {
+  creator: User!
+  name: String!
+  createdAt: Timestamp!
+  updatedAt: Timestamp!
+  isPublic: Boolean!
+  description: String
+  crisisType: String
+}
+
+type Role @table {
+  crisisPlan: CrisisPlan!
+  name: String!
+  description: String!
+  defaultAssignee: User
+}
+
+type Incident @table {
+  crisisPlan: CrisisPlan!
+  reporter: User!
+  title: String!
+  status: String!
+  createdAt: Timestamp!
+  updatedAt: Timestamp!
+  description: String
+  severity: String
+  startedAt: Timestamp
+  endedAt: Timestamp
+}
+
+type Task @table {
+  incident: Incident!
+  assignee: User
+  description: String!
+  status: String!
+  createdAt: Timestamp!
+  updatedAt: Timestamp!
+  dueDate: Timestamp
+}
